@@ -38,13 +38,34 @@ kindle-note-format
 
 ### 剪贴文章 ###
 
-    Book Title\n
-    - 剪贴文章 位置N | 已添加至 sometime\n
-    \n
-    剪贴文章内容\n
+    Book Title\r\n
+    - 剪贴文章 位置N | 已添加至 sometime\r\n
+    \r\n
+    剪贴文章内容\r\n
 
 每一个摘录都用`==========\r\n`分割开。
 
+##脚本使用
+
+###环境###
+安装ruby
+
+###运行###
+>ruby kindle-format [-param] [path-to-sourcefile]
+
+其中 
+
+*   -param 有 “-h”,"-m"   
+    -h 表示查看帮助   
+    -m 表示输出为markdown格式   
+*   path-to-sourcefile 为可选参数，默认为当前路径下的My Clippings.txt   
+
+###输出###
+-m 会在当前目录下生成“kindle-markdown”目录，并在该目录下创建一个以运行时间为标题的markdown文件. 
+
+##待完成
+###支持Octopress的文档###
+###支持其他格式的文档###
 
 ##参考
 * [lxyu-Kindle Clippings](https://github.com/lxyu/kindle-clippings)
