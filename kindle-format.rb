@@ -10,10 +10,11 @@ $bound = "==========\r\n"
 $m_fenge = "------------------\n\n"
 $date = DateTime.now.to_time
 $name = "kindle note"
-$param = {"-h" => 0, "-m" => 1}
+$param = {"-h" => 0, "-m" => 1, "-mo" => 2}
 $filename = "My Clippings.txt"
 $type = 0 
 
+#Octopress格式头
 def put_head
 	str = "---
 layout: post
@@ -26,6 +27,8 @@ description: 'kindle note'
 ---\n\n"
 	str
 end
+
+#查看帮助
 def put_help
 	puts "
 格式
@@ -33,8 +36,11 @@ ruby kindle-format.rb [-param] [path/filename]
 参数
 -h  查看帮助
 -m  生成markdown的文档
+-mo 支持Octopress 的 MarkDown格式  
 "
 end
+
+#都去文件，分割笔记块（Windows下存在编码问题）
 def get_block(file)
 	block = file.read.split($bound)
 end
@@ -56,7 +62,7 @@ def get_type(block)
 	end
 end
 
-#
+#得到标注类信息
 def get_light(block)
 	block.tr!("\r","")
 	line = block.split("\n")
@@ -70,6 +76,7 @@ def get_light(block)
 	info
 end
 
+#得到笔记信息
 def get_note(block1,block2)
 	info = get_light(block2)
 	block1.tr!("\r","")
@@ -77,6 +84,7 @@ def get_note(block1,block2)
 	info 
 end
 
+#格式化信息
 def get_format(info,type)
 	format_str = ""
 	case type
@@ -89,6 +97,8 @@ def get_format(info,type)
 	end
 	format_str
 end
+
+#输出str 到 path目录下的name文件中
 def output(str,name,path)
 	begin
 		if !File.exist?(path)
@@ -104,6 +114,7 @@ def output(str,name,path)
 	end
 end
 
+#输出str
 def write_str(str,type)
 	case type
 	when "-m"
@@ -111,51 +122,61 @@ def write_str(str,type)
 	end
 end
 
-$p = ARGV[0]
-if ARGV.size == 2
-	$filename = ARGV[1]
-end
-
-if ARGV.size > 2 || $param[$p] == nil 
-	puts "错误的参数输入(Wrong param)\n\t请输入 -h 进行帮助(-h for help)"
-	exit
-elsif !File.exist?($filename) || !File.file?($filename)
- 	"文件#{$filename}不存在\n (the file #{$filename} is not exist)"
-end
-
-if $p == "-h"
-	put_help
-	exit
-end
-
-begin
-	file = open($filename)
-	$block = get_block(file)
-	file.close
-rescue Exception => e
-	p e
-	exit
-end
-
-i = 0
-output_str = put_head
-while i < $block.size
-	tp = get_type($block[i])
-	case tp
-	when 1,2 then
-		info = get_light($block[i])
-		output_str +=get_format(info,$p)
-		output_str += "<!-- more -->\n" if i == 0
-	when 3 then
-		info = get_note($block[i],$block[i+1])
-		output_str +=get_format(info,$p)
-		output_str += "<!-- more -->\n" if i == 0
-		i += 1
+#Main
+def main
+	$p = ARGV[0]
+	if ARGV.size == 2
+		$filename = ARGV[1]
 	end
-	i+=1
+
+	if ARGV.size > 2 || $param[$p] == nil 
+		puts "错误的参数输入(Wrong param)\n\t请输入 -h 进行帮助(-h for help)"
+		exit
+	elsif !File.exist?($filename) || !File.file?($filename)
+ 		"文件#{$filename}不存在\n (the file #{$filename} is not exist)"
+	end
+
+	if $p == "-h"
+		put_help
+		exit
+	end
+
+	begin
+		file = open($filename)
+		$block = get_block(file)
+		file.close
+	rescue Exception => e
+		p e
+		exit
+	end
+
+	i = 0
+	output_str = ""
+	if $param[$p] == 2
+		output_str += put_head
+		$p = "-m"
+		$octo = true
+	end
+	while i < $block.size
+		tp = get_type($block[i])
+		case tp
+		when 1,2 then
+			info = get_light($block[i])
+			output_str +=get_format(info,$p)
+			output_str += "<!-- more -->\n" if i == 0 && $octo
+		when 3 then
+			info = get_note($block[i],$block[i+1])
+			output_str +=get_format(info,$p)
+			output_str += "<!-- more -->\n" if i == 0 && $octo
+			i += 1
+		end
+		i+=1
+	end
+
+	write_str(output_str,$p)
+
+	puts "转换成功 ^_^ 请去当前文件夹查看"
+	exit
 end
 
-write_str(output_str,$p)
-
-puts "转换成功 ^_^ 请去当前文件夹查看"
-exit
+main 
