@@ -57,16 +57,17 @@ kindle-note-format
 
 *   -param 有 “-h”,"-m"   
     -h 表示查看帮助   
-    -m 表示输出为markdown格式   
+    -m 表示输出为markdown格式  
+    -mo 表示输出支持Octopress的markdown格式 
 *   path-to-sourcefile 为可选参数，默认为当前路径下的My Clippings.txt   
 
 ###输出###
 -m 会在当前目录下生成“kindle-markdown”目录，并在该目录下创建一个以运行时间为标题的markdown文件. 
 
 ##待完成
-###支持Octopress的文档###
+###支持Octopress的文档(已完成)###
 ###支持其他格式的文档###
-
+###windows与linux下的编码的Bug###
 ##参考
 * [lxyu-Kindle Clippings](https://github.com/lxyu/kindle-clippings)
 * [自己定制mint-fortune 打造个性linuxmint终端窗口](http://blog.51osos.com/linux/mint-fortune-linuxmint-terminal/)
