@@ -69,8 +69,8 @@ kindle-note-format
 ###支持其他格式的文档###
 ###windows与linux下的编码的Bug###
 ##参考
+* [kindle-clips](https://github.com/minejo/kindle-clips)
 * [lxyu-Kindle Clippings](https://github.com/lxyu/kindle-clippings)
-* [自己定制mint-fortune 打造个性linuxmint终端窗口](http://blog.51osos.com/linux/mint-fortune-linuxmint-terminal/)
 
 
 
