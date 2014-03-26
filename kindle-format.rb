@@ -6,7 +6,7 @@
 require "date"
 require "fileutils"
 
-$bound = "==========\r\n"
+$bound = "==========\n"
 $m_fenge = "------------------\n\n"
 $date = DateTime.now.to_time
 $name = "kindle note"
@@ -42,7 +42,10 @@ end
 
 #都去文件，分割笔记块（Windows下存在编码问题）
 def get_block(file)
-	block = file.read.split($bound)
+	file.tr!("\r","")
+	block = file.split($bound)
+
+	# p block.size
 end
 
 #获取快类型 0：书签 1：标注 2：剪贴 3：笔记
@@ -104,6 +107,7 @@ def output(str,name,path)
 		if !File.exist?(path)
 			 Dir.mkdir(path)
 		end
+
 		file = File.new(path+"/"+name,"w")
 		file.puts str
 		file.close
@@ -118,7 +122,7 @@ end
 def write_str(str,type)
 	case type
 	when "-m"
-		output(str,"#{$date} #{$name}.md","kindle-markdown")
+		output(str,"#{$date} #{$name}.md".tr!(":",""),"kindle-markdown")
 	end
 end
 
@@ -142,11 +146,14 @@ def main
 	end
 
 	begin
-		file = open($filename)
-		$block = get_block(file)
+		# p 100
+		file = open($filename,:encoding=>"UTF-8")
+		# p 100
+		$block = get_block(file.read)
 		file.close
 	rescue Exception => e
 		p e
+		p 1
 		exit
 	end
 
